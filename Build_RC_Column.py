@@ -19,8 +19,6 @@ from __main__ import *
 
 def Build_RC_Column(dbi,dti,CLl,dblc, cover, Ablc, CLt, Atc, dbtc, datadir,PCol,MS_path,GM):
     # -----------------------------------------------------------------------------
-    #	OpenSees (Tcl) code by:	Silvia Mazzoni & Frank McKenna, 2006
-
     #
     #    ^Y
     #    |
