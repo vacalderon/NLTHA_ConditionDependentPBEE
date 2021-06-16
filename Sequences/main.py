@@ -26,9 +26,11 @@ Created on Wed Aug 14 16:32:05 2019
 import time
 start_time = time.time()
 import os
+import shutil
 import math
 from LibUnitsMUS import *
 import Build_RC_Column
+import Postprocessor_of_data
 import pandas as pd
 
 
@@ -56,16 +58,20 @@ GM_Path=r'C:\ConditionDependentPBEE\GroundMotion_Squences_Records'
 GMListing = os.listdir(GM_Path)
 rootdir=r'C:\ConditionDependentPBEE\NLTHA_Sequences'
 PCol =225.0*kip
-SeqDB = pd.read_csv('"C:\ConditionDependentPBEE\GroundmotionSelection\mainshock_aftershock_file_database.csv"')
+SeqDB = pd.read_csv(r'C:\ConditionDependentPBEE\GroundmotionSelection\mainshock_aftershock_file_database.csv')
 # ----------------------------------------------------------------------------
 #|                             BATCH RUN
 # ----------------------------------------------------------------------------
 
 
 
-for GM in GMListing:
+for GM,row in SeqDB.iterrows():
     i=-1
-    print('GM = ',GM)
+    GM_fn = row['horizontal_1_filename']
+    GM_dt = row['dt_sequence_horizontal1']
+    GM_npt = row['npt_sequence_horizontal1']
+    print('GM = ',GM_fn)
+    GM_file=GM_Path+'\\'+GM_fn
     for cover in icover:
         i=i+1
         for Time in iTime:
@@ -87,7 +93,7 @@ for GM in GMListing:
                 Atc  = 0.25*math.pi*dbtc**2
                 Atcm = Atc/(1000.**2)
                 CLt   = ((0.55795-Atcm*7800.)/0.55795)*100
-                datadir=rootdir+"\\"+"data"+"\\"+GM+"\\"+str(cover)+"\\"+str(wcr)+"\\"+str(Time)
+                datadir=rootdir+"\\"+"data"+"\\"+GM_fn+"\\"+str(cover)+"\\"+str(wcr)+"\\"+str(Time)
                 
                 
                 
@@ -107,10 +113,22 @@ for GM in GMListing:
                 # Obtain GM dt and npt
 
                 Build_RC_Column.Build_RC_Column(dbi,dti,CLl,dblc,cover,Ablc,CLt,Atc,dbtc,datadir,PCol,GM_file, GM_dt, GM_npt)
-                with open(datadir+"\\Conditions.out", 'w') as f:
-                    f.write("%s %s %s %s %s \n" %(cover,Time,wcr,CLl,CLt) )
-                f.close
-                    
-                    
+                
+                Postprocessor_of_data.Postprocessor_of_data(GM_fn, cover, wcr, Time)
+                # os.remove(datadir+"\\StressStrain.out")
+                # os.remove(datadir+"\\StressStrain2.out")
+                # os.remove(datadir+"\\StressStrain3.out")
+                # os.remove(datadir+"\\Conditions.out")
+                # os.remove(datadir+"\\DFree.out")
+                # os.remove(datadir+"\\mat.out")
+                # os.remove(datadir+"\\Period.out")
+                # os.remove(datadir+"\\PGA.out")
+                # os.remove(datadir+"\\RBase.out")
+                
+
+
+                print('-------------------------------------------------------------------------------------------')
+                print("OUTPUT FILES DELETED")
+                print('-------------------------------------------------------------------------------------------')
 print("ALL ANALYSIS COMPLETE")
 print("--- %s minutes ---" % ((time.time() - start_time)/60))
