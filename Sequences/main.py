@@ -113,17 +113,20 @@ for GM,row in SeqDB.iterrows():
                 # Obtain GM dt and npt
 
                 Build_RC_Column.Build_RC_Column(dbi,dti,CLl,dblc,cover,Ablc,CLt,Atc,dbtc,datadir,PCol,GM_file, GM_dt, GM_npt)
+                with open(datadir+"\\Conditions.out", 'w') as f:
+                    f.write("%s %s %s %s %s \n" %(cover,Time,wcr,CLl,CLt) )
+                f.close
                 
                 Postprocessor_of_data.Postprocessor_of_data(GM_fn, cover, wcr, Time)
-                # os.remove(datadir+"\\StressStrain.out")
-                # os.remove(datadir+"\\StressStrain2.out")
-                # os.remove(datadir+"\\StressStrain3.out")
-                # os.remove(datadir+"\\Conditions.out")
-                # os.remove(datadir+"\\DFree.out")
-                # os.remove(datadir+"\\mat.out")
-                # os.remove(datadir+"\\Period.out")
-                # os.remove(datadir+"\\PGA.out")
-                # os.remove(datadir+"\\RBase.out")
+                os.remove(datadir+"\\StressStrain.out")
+                os.remove(datadir+"\\StressStrain2.out")
+                os.remove(datadir+"\\StressStrain3.out")
+                os.remove(datadir+"\\Conditions.out")
+                os.remove(datadir+"\\DFree.out")
+                os.remove(datadir+"\\mat.out")
+                os.remove(datadir+"\\Period.out")
+                os.remove(datadir+"\\PGA.out")
+                os.remove(datadir+"\\RBase.out")
                 
 
 

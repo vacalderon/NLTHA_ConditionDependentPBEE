@@ -219,11 +219,11 @@ def Build_RC_Column(dbi, dti, CLl, dblc, cover, Ablc, CLt, Atc, dbtc, datadir, P
     # recorder('Element', '-file', datadir + '/FCol.out', '-time', '-ele', 1, 'globalForce')
     # recorder('Element', '-file', datadir + '/ForceColSec1.out', '-time', '-ele', 1, 'section', 1, 'force')
     recorder('Element', '-file', datadir + '/StressStrain.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(Rbl), '0.0', 'mat', '3', 'stressStrain')  # Rbl,0, IDreinf
+             str(Rbl), '0', '3', 'stressStrain')  # Rbl,0, IDreinf
     recorder('Element', '-file', datadir + '/StressStrain2.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(-Dprime) + ', 0.0', 'mat', '1', 'stressStrain')  # Rbl,0, IDreinf
+             str(-Dprime), '0.0', '1', 'stressStrain')  # Rbl,0, IDreinf
     recorder('Element', '-file', datadir + '/StressStrain3.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(-DCol) + ', 0.0', 'mat', '2', 'stressStrain')
+             str(-DCol),'0.0', '2', 'stressStrain')
     # recorder('Element', '-file', datadir+'Data-2c/DCol.out','-time', '-ele', 1, 'deformations')
 
     # ------------------------------------------------------------------------------
