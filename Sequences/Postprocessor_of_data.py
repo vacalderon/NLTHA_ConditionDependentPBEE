@@ -25,6 +25,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import shutil
+from LibUnitsMUS import *
 
 # -----------------------------------------------------------------------------
 
@@ -67,6 +68,9 @@ def Postprocessor_of_data(GM_fn, cover, wcr, Time):
     LS_SteelBB = []
     LS_ConfYield = []
     FirstPeriods = []
+    EffectivePeriods = []
+    Forces = []
+    Displacements = []
 
     # GM_fn2=[r"RSN1231_CHICHI_CHY080-E.AT2"]
 
@@ -124,7 +128,17 @@ def Postprocessor_of_data(GM_fn, cover, wcr, Time):
 
     X = [float(i) for i in x]
     Y = [-float(i) for i in y]
-
+    maxDisp = max(X)
+    minDisp = min(X)
+    if maxDisp>abs(minDisp) :
+        AbsMaxDisp=maxDisp
+    elif maxDisp<abs(minDisp) :
+        AbsMaxDisp=minDisp
+    maxDispPoss = X.index(AbsMaxDisp)
+    maxForce_at_maxDisp = Y[maxDispPoss]
+    Keff = abs(maxForce_at_maxDisp)/abs(AbsMaxDisp)
+    meff = 225.0*kip/g
+    Teff = (2*math.pi)*(math.sqrt((meff/Keff)))
     # plt.figure(1)
     # plt.plot(X, Y, color[clr], label=labels[clr], linewidth=3.0)
     # #                plt.title('Example for ChiChi EQ w/c=0.4', fontsize=32)
@@ -210,6 +224,9 @@ def Postprocessor_of_data(GM_fn, cover, wcr, Time):
     LS_ConfYield.append(e_csy)
     LS_SteelBB.append(e_bb)
     FirstPeriods.append(T1)
+    EffectivePeriods.append(Teff)
+    Forces.append(maxForce_at_maxDisp)
+    Displacements.append(AbsMaxDisp)
 
     dataDict = {'earthquake': earthquake,
                 'pga_(g)': PGA_MS,
@@ -233,7 +250,10 @@ def Postprocessor_of_data(GM_fn, cover, wcr, Time):
                 'fc_ksi': CompStrength,
                 'LimitState_ConcreteCoverCrushing': LS_ConcCover,
                 'ConfinementSteelYielding': LS_ConfYield,
-                'LongitudinlSteelBuckling': LS_SteelBB}
+                'LongitudinlSteelBuckling': LS_SteelBB,
+                'Effective period, Teff' : EffectivePeriods,
+                'Force' : Forces,
+                'MaxDisplacement at MaxForce' : Displacements}
 
     DataFrame_Out = pd.DataFrame(dataDict)
     # DataFrame_Out.plot.line(x='time_yrs',y='Steel_Strain')#,s=20,c='time_yrs',colormap='viridis')
