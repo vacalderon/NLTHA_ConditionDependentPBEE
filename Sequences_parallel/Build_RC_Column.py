@@ -116,7 +116,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,dbi, dti, CLl, dblc, nb,c
     eps1 = mand[1]
     fc2 = mand[2]
     eps2 = mand[3]
-    print('mander fc=',fc)
+    
     # CONCRETE                  tag   f'c        ec0   f'cu        ecu
     # Core concrete (confined)
     uniaxialMaterial('Concrete01', IDconcC, fc, eps1, fc2, eps2)

@@ -1,0 +1,5 @@
+column_diameter,long_bar_diameter,number_of_bars_longitudinal,trans_bar_diameter,spacing_trans_steel,rho_l,rho_v
+90,1,80,0.75,2,0.01,0.01
+90,1.125,128,0.75,2,0.02,0.01
+90,1.25,150,0.75,2,0.03,0.01
+90,1.75,114,0.75,2,0.04,0.01

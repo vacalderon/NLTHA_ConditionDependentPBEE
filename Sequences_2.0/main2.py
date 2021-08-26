@@ -49,7 +49,7 @@ import pandas as pd
 compressive_strength_concrete = 5*ksi
 yield_strength_long_steel = 60*ksi
 yield_strength_trans_steel = 60*ksi
-iShapeFactor = [4]
+iShapeFactor = [6,8]
 icover = [4] #[4.,5.,7.5] #
 iTcorr =  [1.1307] #[1.1307,1.7667,3.975] #
 iTime = [5.] #[5.,10.,15., 20., 25., 30., 35., 40., 45., 50., 55., 60., 65., 70., 75.] #
@@ -59,7 +59,7 @@ GMListing = os.listdir(GM_Path)
 rootdir = r'C:\ConditionDependentPBEE\NLTHA_ConditionDependentPBEE\Sequences_2.0'
 iALR = [0.10] #[0.05,0.1,0.15,0.2]
 SeqDB = pd.read_csv(r'focus_ms_as_file_database.csv')
-GeomDB = pd.read_csv(r'C:\ConditionDependentPBEE\NLTHA_ConditionDependentPBEE\Sequences_2.0\column_database_04.csv')
+GeomDB = pd.read_csv(r'C:\ConditionDependentPBEE\NLTHA_ConditionDependentPBEE\Sequences_2.0\column_database_02.csv')
 # ----------------------------------------------------------------------------
 #|                             BATCH RUN
 # ----------------------------------------------------------------------------
