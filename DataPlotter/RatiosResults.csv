@@ -1,0 +1,10 @@
+axial_load_ratio,0.2
+volumetric_ratio,0.01
+,
+Row Labels,Average of steel_strain_ratio
+0,0
+5,0.02672127
+10,0.044954036
+15,0.059725797
+20,0.041520711
+Grand Total,0.034062914
