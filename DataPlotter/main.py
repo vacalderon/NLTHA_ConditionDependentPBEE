@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from LibUnitsMUS import *
+import seaborn as sns
 
 data_file ='PosprocData.csv'
 column_file = 'column_database.csv'
@@ -20,6 +21,8 @@ iCL = [0, 5, 10, 15, 20]
 iALR = [0.05, 0.1, 0.15, 0.2]
 compressive_strength_concrete = 5 * ksi
 SD_effs = []
+strain_LS = []
+strain_DC = []
 color_codes = ['#D94545','#73A8D4','#F7B76D','#519872','#57467B','#545066']
 
 strain_ratios = []
@@ -48,6 +51,22 @@ for i, row in main_DF.iterrows():
     delta_y = phi_y*(L+Lsp)**2/3
     mu = abs(delta_u)/delta_y
     SD_el = float(row['SD_at_Teff'])
+    e_steel = float(row['Steel_Strain'])
+    e_steel_LS = 0.015
+    e_steel_DC = float(row['LongitudinlSteelBuckling'])
+    
+    if e_steel<e_steel_LS:
+        LS = 0
+    elif e_steel>e_steel_LS:
+        LS = 1
+    strain_LS.append(LS)
+    
+    if e_steel<e_steel_DC:
+        DC = 0
+    elif e_steel>e_steel_DC:
+        DC = 1    
+    strain_DC.append(DC)
+    
     if mu >1:
         xi_eq = 0.05 + 0.565*(mu-1)/(mu*np.pi)
         DF = np.sqrt((0.07)/(0.05+xi_eq))
@@ -58,7 +77,10 @@ for i, row in main_DF.iterrows():
     
     SD_effs.append(SD_Teff_xi_eq)
 
-main_DF.insert(27,"SD_Teff,xi",SD_effs,True)
+main_DF.insert(27,"SD_Teff_xi",SD_effs,True)
+main_DF.insert(28,"LS_collapse",strain_LS,True)
+main_DF.insert(29,"DC_collapse",strain_DC,True)
+#main_DF.to_csv('MainDF.csv')
 
 rhol = [0.01,0.02,0.03,0.04]    
 figure_number = 0
@@ -72,7 +94,7 @@ for i in iCL:
         corrosion=main_DF[corrosion_level_filter & long_steel_rho_filter]
         plt.figure(figure_number)
         plt.figure(figure_number).set_size_inches(5,5)
-        plt.scatter(corrosion['SD_Teff,xi'],corrosion['Steel_Strain'],c=color_codes[color],label=r'$\rho_{l}=$'+str(rhol[color]))
+        plt.scatter(corrosion['SD_Teff_xi'],corrosion['Steel_Strain'],c=color_codes[color],label=r'$\rho_{l}=$'+str(rhol[color]))
         plt.title('Results for CL '+str(i), fontsize=12)
         plt.xlabel('Spectral Diplacement at Effective Period\n and Equivalent Damping'+r' $Sd(T_{eff},\xi_{eq}$)(in)', fontsize=10)
         plt.ylabel('Maximum steel strain'+r'$\varepsilon$ (in/in)', fontsize=10)
@@ -80,6 +102,10 @@ for i in iCL:
         plt.grid()
         plt.legend(fontsize=6)
         plt.show()
+        plt.figure(10+figure_number)
+        count, bins, ignored = plt.hist(corrosion['SD_Teff_xi'], 30)
+        plt.show()
+        
         
 for k, row in groundmotion_df.iterrows():
     groundmotion_name=row['horizontal_1_filename']
@@ -116,7 +142,7 @@ for k, row in groundmotion_df.iterrows():
                             corrosion_strain = float(benchmark_data['Steel_Strain'].to_string(index=False))
                             strain_ratio = (corrosion_strain/benchmark_strain)-1
                             strain_ratios.append(strain_ratio)
-                            Sd_eff_eq_xi.append(float(benchmark_data['SD_Teff,xi'].to_string(index=False)))
+                            Sd_eff_eq_xi.append(float(benchmark_data['SD_Teff_xi'].to_string(index=False)))
                             alrs.append(axial_load_ratio)
                             CorrosionLevels.append(i)
                             final_vol_ratios.append(vol_ratio)
@@ -135,7 +161,7 @@ for k, row in groundmotion_df.iterrows():
                             corrosion_strain = float(corrosion_data['Steel_Strain'].to_string(index=False))
                             strain_ratio = (corrosion_strain/benchmark_strain)-1
                             strain_ratios.append(strain_ratio)
-                            Sd_eff_eq_xi.append(float(benchmark_data['SD_Teff,xi'].to_string(index=False)))
+                            Sd_eff_eq_xi.append(float(benchmark_data['SD_Teff_xi'].to_string(index=False)))
                             alrs.append(axial_load_ratio)
                             CorrosionLevels.append(i)
                             final_vol_ratios.append(vol_ratio)
@@ -171,5 +197,50 @@ for i in iCL:
     plt.legend(fontsize=6)
     plt.show()
 
+plt.figure(figure_number+1)
+sns.boxplot(x=DataFrame_RatiosResults["CorrosionLvl_Long"], y=DataFrame_RatiosResults["steel_strain_ratio"])
+plt.ylim(-0.5,2)
+plt.show()
 
+# CODE TO GENERATE HYSTOGRAM
+bins=np.arange(0, 250, 2)
+length_of_bins=len(bins)
 
+for i in iCL:
+    counter =0
+    SDs = []
+    analyses = []
+    LS_collapses = []
+    DC_collapses = []
+    strains = []
+    for j in range(length_of_bins-1):
+        lower_limit = bins[counter]
+        upper_limit = bins[counter+1]
+        corrosion_level_filter=(main_DF.CorrosionLvl_Long==i)
+        limits_filter=(main_DF.SD_Teff_xi.between(int(lower_limit),int(upper_limit)))
+        corrosion_collapses=main_DF[corrosion_level_filter & limits_filter]
+        mean_sd = (lower_limit+upper_limit)/2
+        number_of_analyses = len(corrosion_collapses)
+        LS_collapses_count = corrosion_collapses['LS_collapse'].sum()
+        DC_collapses_count = corrosion_collapses['DC_collapse'].sum()
+        SDs.append(mean_sd)
+        analyses.append(number_of_analyses)
+        LS_collapses.append(LS_collapses_count)
+        DC_collapses.append(DC_collapses_count)
+        counter = counter + 1
+        
+    ColapsesDict = {'SD_teff_xi': SDs,
+                    'Number of Analyses': analyses,
+                    'Collapses_LS': LS_collapses,
+                    'Collapses_DC': DC_collapses}
+    DataFrame_CollapseResults = pd.DataFrame(ColapsesDict)
+    DataFrame_CollapseResults.to_csv('collapseinfo_CL'+str(i)+'.csv')
+    
+    
+        
+        
+        
+        
+        
+    
+    
