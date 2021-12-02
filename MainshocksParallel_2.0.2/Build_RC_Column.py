@@ -22,7 +22,7 @@ import ManderCC
 import openseespy.opensees as ops
 
 
-def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti, CL, dblc, nb,CLt, s_tc, datadir, AxialLoad, GM_file, GM_dt, GM_npt, ALR):
+def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti, CL, dblc, nb,CLt, s_tc, datadir, AxialLoad, GM_file, GM_dt, GM_npt, ALR, alpha):
     # -----------------------------------------------------------------------------
     #
     #    ^Y
@@ -77,7 +77,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     # Define materials for nonlinear columns
     # ------------------------------------------
     # Longitudinal steel properties
-    Fy = fy * ksi * (1 - 0.021 * CL)  # STEEL yield stress
+    Fy = fy * ksi * (1 - alpha * CL)  # STEEL yield stress
     Fu = 1.375 * Fy  # Steel Ultimate Stress
     Es = 29000.0 * ksi  # modulus of steel
     Bs = 0.012  # strain-hardening ratio
@@ -94,7 +94,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     dbl = dblc * inch
 
     # Transverse Steel Properties
-    fyt = fy_transverse * ksi *(1 - 0.021 * CLt) # Yield Stress of Transverse Steel
+    fyt = fy_transverse * ksi *(1 - alpha * CLt) # Yield Stress of Transverse Steel
     dbt = dti * inch  # Diameter of transverse steel
     st = s_tc * inch # Spacing of spiral
     Ast = 0.25*np.pi*(dbt**2)  # Area of transverse steel

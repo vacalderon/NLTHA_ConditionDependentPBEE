@@ -96,11 +96,16 @@ for column, Crow in GeomDB.iterrows():
                             if not os.path.exists(datadir):
                                 os.makedirs(datadir)
 
+                            if yield_strength_long_steel == 60*ksi:
+                                alpha = 0.005
+                            elif yield_strength_long_steel == 80*ksi:
+                                alpha = 0.0075
+
                             dblc = ((1 - CL*0.01) ** 0.5) * dbi
                             Build_RC_Column.Build_RC_Column(D, Height_of_Column, compressive_strength_concrete,
                                                             yield_strength_long_steel, yield_strength_trans_steel,
                                                             dbi, dti, CL, dblc, nbi, CLt, sti, datadir, AxialLoad,
-                                                            GM_file, GM_dt, GM_npt, ALR)
+                                                            GM_file, GM_dt, GM_npt, ALR,alpha)
 
                             with open(datadir + "/Conditions.out", 'w') as f:
                                 f.write("%s \n" % (CL))
