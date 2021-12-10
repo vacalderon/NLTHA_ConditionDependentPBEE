@@ -22,7 +22,8 @@ import ManderCC
 import openseespy.opensees as ops
 
 
-def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti, CL, dblc, nb,CLt, s_tc, datadir, AxialLoad, GM_file, GM_dt, GM_npt, ALR, alpha):
+def Build_RC_Column(Diameter, Height_of_Column, fPrimeC, fy, fy_transverse, dbi, dti, CL, dblc, nb, CLt, s_tc, datadir,
+                    AxialLoad, GM_file, GM_dt, GM_npt, ALR, alpha):
     # -----------------------------------------------------------------------------
     #
     #    ^Y
@@ -90,14 +91,14 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     a4 = 1.0
     c = 2 * inch  # Column cover to reinforcing steel NA.
     numBarsSec = nb  # number of uniformly-distributed longitudinal-reinforcement bars
-    barAreaSec = 0.25*np.pi*dblc**2   # area of longitudinal-reinforcement bars
+    barAreaSec = 0.25 * np.pi * dblc ** 2  # area of longitudinal-reinforcement bars
     dbl = dblc * inch
 
     # Transverse Steel Properties
-    fyt = fy_transverse * ksi *(1 - alpha * CLt) # Yield Stress of Transverse Steel
+    fyt = fy_transverse * ksi * (1 - alpha * CLt)  # Yield Stress of Transverse Steel
     dbt = dti * inch  # Diameter of transverse steel
-    st = s_tc * inch # Spacing of spiral
-    Ast = 0.25*np.pi*(dbt**2)  # Area of transverse steel
+    st = s_tc * inch  # Spacing of spiral
+    Ast = 0.25 * np.pi * (dbt ** 2)  # Area of transverse steel
     Dprime = DCol - 2 * c - dti * 0.5  # Inner core diameter
     Rbl = Dprime * 0.5 - dti * 0.5 - dbi * 0.5  # Location of longitudinal bar
 
@@ -106,7 +107,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     Ec = 57.0 * ksi * np.sqrt(fpc / psi)  # Concrete Elastic Modulus
 
     # unconfined concrete
-    fc1U = -fpc;  # UNCONFINED concrete stress
+    fc1U = -fpc  # UNCONFINED concrete stress
     eps1U = -0.003  # strain at maximum strength of unconfined concrete
     fc2U = 0.2 * fc1U  # ultimate stress
     eps2U = -0.01  # strain at ultimate stress
@@ -118,7 +119,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     eps1 = mand[1]
     fc2 = mand[2]
     eps2 = mand[3]
-    
+
     # CONCRETE                  tag   f'c        ec0   f'cu        ecu
     # Core concrete (confined)
     ops.uniaxialMaterial('Concrete01', IDconcC, fc, eps1, fc2, eps2)
@@ -145,7 +146,7 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     # Writing Material data to file
     with open(datadir + "/mat.out", 'w') as matfile:
         matfile.write("%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s\n" % (
-        Fy, fyt, Ast, st, Dprime, Weight, DCol, LCol, barAreaSec, fc, SPsy, SPsu, SPb, SPR, ALR,dbl))
+            Fy, fyt, Ast, st, Dprime, Weight, DCol, LCol, barAreaSec, fc, SPsy, SPsu, SPb, SPR, ALR, dbl))
     matfile.close
 
     # -------------------------------------------------------------------------
@@ -217,13 +218,13 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     ops.recorder('Node', '-file', datadir + '/DFree.out', '-time', '-node', 3, '-dof', 1, 2, 3, 'disp')
     ops.recorder('Node', '-file', datadir + '/RBase.out', '-time', '-node', 2, '-dof', 1, 2, 3, 'reaction')
     ops.recorder('Element', '-file', datadir + '/StressStrain.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(Rbl), '0', '3', 'stressStrain')  # Rbl,0, IDreinf
+                 str(Rbl), '0', '3', 'stressStrain')  # Rbl,0, IDreinf
     ops.recorder('Element', '-file', datadir + '/StressStrain4.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(-Rbl), '0', '3', 'stressStrain')  # Rbl,0, IDreinf
+                 str(-Rbl), '0', '3', 'stressStrain')  # Rbl,0, IDreinf
     ops.recorder('Element', '-file', datadir + '/StressStrain2.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(-Dprime), '0.0', '1', 'stressStrain')  # Rbl,0, IDreinf
+                 str(-Dprime), '0.0', '1', 'stressStrain')  # Rbl,0, IDreinf
     ops.recorder('Element', '-file', datadir + '/StressStrain3.out', '-time', '-ele', 2, 'section', '1', 'fiber',
-             str(-DCol),'0.0', '2', 'stressStrain')
+                 str(-DCol), '0.0', '2', 'stressStrain')
 
     # ------------------------------------------------------------------------------
     # |                      NLTHA RUN
@@ -318,9 +319,9 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
     # for gravity analysis, load control is fine, 0.1 is the load factor increment (http://opensees.berkeley.edu/wiki/index.php/Load_Control)
 
     Atest = {1: 'NormDispIncr', 2: 'RelativeEnergyIncr', 4: 'RelativeNormUnbalance', 5: 'RelativeNormDispIncr',
-              6: 'NormUnbalance'}
+             6: 'NormUnbalance'}
     Algorithm = {1: 'KrylovNewton', 2: 'SecantNewton', 4: 'RaphsonNewton', 5: 'PeriodicNewton', 6: 'BFGS', 7: 'Broyden',
-                  8: 'NewtonLineSearch'}
+                 8: 'NewtonLineSearch'}
 
     for i in Atest:
 
@@ -344,5 +345,5 @@ def Build_RC_Column(Diameter,Height_of_Column, fPrimeC,fy,fy_transverse,dbi, dti
                 continue
 
     print("GroundMotion Done ", ops.getTime())
-    
+
     ops.wipe()
