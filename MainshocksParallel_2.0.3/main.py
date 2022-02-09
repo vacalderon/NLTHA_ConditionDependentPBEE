@@ -54,9 +54,9 @@ iCL = [0,5,10,15,20]
 iCLt = [0]
 pid = ops.getPID()
 np = ops.getNP()
-GM_Path = r'/home/vacalderon/Documents/MainshocksParallel_2.0.2/GroundMotion_Mainshock_Records'
+GM_Path = r'/home/vacalderon/Documents/MainshocksParallel_2.0.3/GroundMotion_Mainshock_Records'
 GMListing = os.listdir(GM_Path)
-rootdir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.2'
+rootdir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.3'
 iALR = [0.05, 0.10, 0.15, 0.20]  # [0.10] #
 GMDB = pd.read_csv('mainshock_file_database.csv')
 GeomDB = pd.read_csv('column_database.csv')
@@ -97,7 +97,7 @@ for column, Crow in GeomDB.iterrows():
                                 os.makedirs(datadir)
 
                             if yield_strength_long_steel == 60*ksi:
-                                alpha = 0.005
+                                alpha = 0.0075
                             elif yield_strength_long_steel == 80*ksi:
                                 alpha = 0.0075
 

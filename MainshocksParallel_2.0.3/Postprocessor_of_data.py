@@ -29,8 +29,8 @@ from LibUnitsMUS import *
 def Postprocessor_of_data(GM_fn, CL, CLt, D, SF, ALR, rhol, rhov):
     # 1. Opening folder to access data
 
-    SpectrumDir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.2/ResponseSpectrumAnalysis'
-    rootdir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.2/data'
+    SpectrumDir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.3/ResponseSpectrumAnalysis'
+    rootdir = r'/home/vacalderon/Documents/MainshocksParallel_2.0.3/data'
 
     Es = 29000
     earthquake = []
@@ -317,7 +317,7 @@ def Postprocessor_of_data(GM_fn, CL, CLt, D, SF, ALR, rhol, rhov):
     DataFrame_Out = pd.DataFrame(dataDict)
 
     # 12. Writing CSV File
-    DataFrame_Out.to_csv('/home/vacalderon/Documents/MainshocksParallel_2.0.2/results/PosprocData.csv', mode='a',
+    DataFrame_Out.to_csv('/home/vacalderon/Documents/MainshocksParallel_2.0.3/results/PosprocData.csv', mode='a',
                          header=False)
 
     # Output to show in console
